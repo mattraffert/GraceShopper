@@ -2,14 +2,81 @@
 // const { } = require('./');
 const client = require("./client")
 
+const {
+  createUser
+} = require("./users");
+
+const {
+  createActivity, 
+  getAllActivities
+} = require("./activities");
+
+const {
+  createRoutine, 
+  getRoutinesWithoutActivities,
+} = require("./routines");
+
+const {
+  addActivityToRoutine,
+} = require("./routine_activities");
+
 async function dropTables() {
-  console.log("Dropping All Tables...")
+  try{
+    console.log("Dropping All Tables...")
   // drop all tables, in the correct order
+  await client.query(`
+    DROP TABLE IF EXISTS users CASCADE;
+    DROP TABLE IF EXISTS activities CASCADE;
+    DROP TABLE IF EXISTS routines CASCADE;
+    DROP TABLE IF EXISTS routineactivities CASCADE;
+  `);
+    console.log("Finished dropping tables");
+  } catch (error) {
+    console.error("Error dropping tables");
+    throw error;
+  }
 }
 
 async function createTables() {
-  console.log("Starting to build tables...")
+  try{
+    console.log("Starting to build tables...")
   // create all tables, in the correct order
+  await client.query(`
+  CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username varchar(255) UNIQUE NOT NULL,
+    password varchar(255) NOT NULL
+  );
+
+  CREATE TABLE activities(
+    id SERIAL PRIMARY KEY,
+    name varchar(255) UNIQUE NOT NULL,
+    description TEXT NOT NULL
+  );
+
+  CREATE TABLE routines(
+    id SERIAL PRIMARY KEY,
+    "creatorid" INTEGER REFERENCES users (id),
+    "ispublic" BOOLEAN DEFAULT false,
+    name VARCHAR(255) UNIQUE NOT NULL,
+    goal TEXT NOT NULL
+  );
+
+  CREATE TABLE routineactivities(
+    id SERIAL PRIMARY KEY,
+    "routineid" INTEGER REFERENCES routines (id),
+    "activityid" INTEGER REFERENCES activities (id),
+    duration INTEGER,
+    count INTEGER,
+    UNIQUE ("routineid", "activityid")
+  );
+
+  `);
+    console.log("Finished building tables");
+  } catch (error) {
+    console.error("Error building tables");
+    throw error;
+  }
 }
 
 /* 
@@ -110,10 +177,11 @@ async function createInitialRoutines() {
 async function createInitialRoutineActivities() {
   console.log("starting to create routine_activities...")
   const [bicepRoutine, chestRoutine, legRoutine, cardioRoutine] =
-    await getRoutinesWithoutActivities()
+    await getRoutinesWithoutActivities();
   const [bicep1, bicep2, chest1, chest2, leg1, leg2, leg3] =
-    await getAllActivities()
-
+    await getAllActivities();
+    console.log("AAAAAAAAAAAAAAAAAAAAAAA", bicepRoutine, chestRoutine, legRoutine, cardioRoutine)
+    console.log("AAAAAAAAAAAAAAAAAAAAAAA", bicep1, bicep2, chest1, chest2, leg1, leg2, leg3)
   const routineActivitiesToCreate = [
     {
       routineId: bicepRoutine.id,
