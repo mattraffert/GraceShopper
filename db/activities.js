@@ -71,33 +71,17 @@ async function getActivityByName(name) {
 }
 
 // used as a helper inside db/routines.js
-async function attachActivitiesToRoutines(routines) {
-    const routinesById = [];
-    routines.forEach((routine) => {
-      if (!routinesById[routine.id]) {
-        routinesById[routine.id] = {
-          id: routine.id,
-          routineid: routine.routineid,
-          creatorName: routine.username,
-          isPublic: routine.ispublic,
-          name: routine.routinename,
-          goal: routine.goal,
-          activities: [],
-        };
-      }
-      const activity = {
-        name: routine.activityname,
-        activityid: routine.activityid,
-        description: routine.description,
-        count: routine.count,
-        duration: routine.duration,
-        routineid: routine.routineid,
-        routineactivityid: routine.id
-      };
-      routinesById[routine.id].activities.push(activity);
-    });
-  
-    return routinesById;
+async function attachActivitiesToRoutines(routines, rActivities) {
+	routines.forEach(routine => {
+		routine.activities = [];
+
+		rActivities.forEach(rActivity => {
+			if (routine.id === rActivity.routineId) {
+				routine.activities.push(rActivity);
+			}
+		});
+	});
+	return routines;
 
 }
 

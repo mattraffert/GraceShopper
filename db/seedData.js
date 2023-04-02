@@ -28,7 +28,7 @@ async function dropTables() {
     DROP TABLE IF EXISTS users CASCADE;
     DROP TABLE IF EXISTS activities CASCADE;
     DROP TABLE IF EXISTS routines CASCADE;
-    DROP TABLE IF EXISTS routineactivities CASCADE;
+    DROP TABLE IF EXISTS routine_activities CASCADE;
   `);
     console.log("Finished dropping tables");
   } catch (error) {
@@ -56,19 +56,19 @@ async function createTables() {
 
   CREATE TABLE routines(
     id SERIAL PRIMARY KEY,
-    "creatorid" INTEGER REFERENCES users (id),
-    "ispublic" BOOLEAN DEFAULT false,
+    "creatorId" INTEGER REFERENCES users (id),
+    "isPublic" BOOLEAN DEFAULT false,
     name VARCHAR(255) UNIQUE NOT NULL,
     goal TEXT NOT NULL
   );
 
-  CREATE TABLE routineactivities(
+  CREATE TABLE routine_activities(
     id SERIAL PRIMARY KEY,
-    "routineid" INTEGER REFERENCES routines (id),
-    "activityid" INTEGER REFERENCES activities (id),
+    "routineId" INTEGER REFERENCES routines (id),
+    "activityId" INTEGER REFERENCES activities (id),
     duration INTEGER,
     count INTEGER,
-    UNIQUE ("routineid", "activityid")
+    UNIQUE ("routineId", "activityId")
   );
 
   `);
