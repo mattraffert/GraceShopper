@@ -1,7 +1,12 @@
 const client = require("./client");
+
 const {
   getUserById
 } = require("./users");
+
+const {
+  getRoutineById
+} = require("./routines");
 
 async function addActivityToRoutine({
   routineId,
@@ -11,17 +16,15 @@ async function addActivityToRoutine({
 }) {
   try {
     console.log("Adding new routineactivity")
-    const { rows } = await client.query (`
-    INSERT INTO routine_activities("routineId", "activityId", count, duration) 
-    VALUES($1, $2, $3, $4) 
-    RETURNING *;
-    `, [  routineId,
-      activityId,
-      count,
-      duration,]);
-  
-    console.log("Finished adding new routineactivity")
-    return rows;
+		const {
+			rows: [routineActivity]
+		} = await client.query(
+			`INSERT INTO routine_activities("routineId", "activityId", count, duration) 
+            VALUES($1, $2, $3, $4) RETURNING *`,
+			[routineId, activityId, count, duration]
+		);
+
+		return routineActivity;
     } catch (error) {
       console.log("Error creating new routineactivity")
       throw error;
@@ -52,7 +55,7 @@ async function getRoutineActivitiesByRoutine({ id }) {
     const { rows } = await client.query(`
     SELECT *
     FROM routine_activities
-    WHERE routineid=$1;
+    WHERE "routineId"=$1;
     `, [id]);
 
     console.log('Routineactivity');
@@ -104,14 +107,14 @@ async function updateRoutineActivity({ id, ...fields }) {
 
 async function destroyRoutineActivity(id) {
   try {
-    console.log("Deleting routineactivity")
-    const { rows } = await client.query(`
-    DELETE FROM routine_activities
-    WHERE id=$1;
-    `, [id]);
+		const {
+			rows: [deleted]
+		} = await client.query(
+			`delete from routine_activities where id = $1 returning *`,
+			[id]
+		);
 
-    console.log('Deleted routineactivity');
-    return rows;
+		return deleted;
 
   } catch (error) {
     console.log("Error finding routineactivity")
@@ -121,11 +124,17 @@ async function destroyRoutineActivity(id) {
 
 async function canEditRoutineActivity(routineActivityId, userId) {
   const rouAct = await getRoutineActivityById(routineActivityId);
+  const rouId = await getRoutineById(rouAct.routineId)
   const user = await getUserById(userId);
 
-  if (user == rouAct.id) {
+  console.log("AAAAAAAAAAA", rouAct, rouId, user)
+  console.log("BBBBBBBBBBB", user.id, rouId.creatorId)
+
+  if (user.id == rouId.creatorId) {
     console.log("User created this routineactivity")
-    return
+    return true;
+  } else {
+    return false;
   }
 
 }
