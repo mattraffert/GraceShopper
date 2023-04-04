@@ -7,7 +7,7 @@ const {
 	destroyRoutine
 } = require('../db/routines');
 const { addActivityToRoutine } = require('../db/routine_activities');
-const { requireUser } = require('./users');
+const { requireUser } = require('./require');
 
 routinesRouter.get('/', async (req, res, next) => {
 	try {

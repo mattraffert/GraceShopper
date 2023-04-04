@@ -1,6 +1,6 @@
 const express = require('express');
 const routineActivitiesRouter = express.Router();
-const { requireUser } = require('./users');
+const { requireUser } = require('./require');
 const {
 	updateRoutineActivity,
 	getRoutineActivityById,

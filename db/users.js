@@ -1,24 +1,30 @@
+//import { hash } from "bcrypt";
 const client = require("./client");
+const { compare, hash } = require('bcrypt');
+
 
 // database functions
 
 // user functions
 async function createUser({ username, password }) {
+  const SALT_COUNT = 10;
+  const hashedPassword = await hash(password, SALT_COUNT)
   try {
-    console.log("Adding new user")
+    console.log(`Creating new user ${username}...`)
+    
     const { rows: [user] } = await client.query (`
     INSERT INTO users(username, password) 
     VALUES($1, $2) 
     ON CONFLICT (username) DO NOTHING 
     RETURNING *;
-    `, [username, password]);
+    `, [username, hashedPassword]);
 
     delete user.password;
   
-    console.log("Finished creating new user")
+    console.log(`Finished creating new user ${username}!`)
     return user;
     } catch (error) {
-      console.log("Error creating new user")
+      console.error(`Error creating new user ${username}!`)
       throw error;
     }
 }
@@ -26,32 +32,28 @@ async function createUser({ username, password }) {
 
 
 async function getUser({ username, password }) {
+  
   try {
-    console.log("Finding user")
-    const { rows: [user] } = await client.query (`
-    SELECT *
-    FROM users
-    WHERE username=$1
-    `, [username]);
+    console.log(`Getting user ${username}...`)
+    const user = await getUserByUsername(username);
+		const hashedPass = user.password;
+		const match = await compare(password, hashedPass);
 
-    if (password !== user.password) {
-      console.log("Error finding user")
-      return null;
-    } else {
+		if (match) {
       delete user.password;
-      console.log("Found user", user)
+      console.log(`Found user ${username}!`, user)
       return user
     }
     
     } catch (error) {
-      console.log("Error finding user")
+      console.error(`Error getting user ${username}!`)
       throw error;
     }
 }
 
 async function getUserById(userId) {
   try {
-    console.log("Finding user")
+    console.log(`Getting user by id ${userId}...`)
     const { rows } = await client.query(`
     SELECT *
     FROM users
@@ -60,28 +62,28 @@ async function getUserById(userId) {
 
     delete rows[0].password;
 
-    console.log('user');
+    console.log(`Found user by id ${userId}!`);
     return rows[0];
 
   } catch (error) {
-    console.log("Error finding user")
+    console.error(`Found user by id ${userId}!`)
     throw error;
   }
 }
 
 async function getUserByUsername(userName) {
   try {
-    console.log("Finding user")
+    console.log(`Getting user by username ${userName}...`)
     const { rows: [user] } = await client.query (`
     SELECT *
     FROM users
     WHERE username=$1;
     `, [userName]);
   
-    console.log("Found user")
+    console.log(`Found user by username ${userName}!`)
     return user;
     } catch (error) {
-      console.log("Error finding user")
+      console.error(`Error getting user by username ${userName}!`)
       throw error;
     }
 }

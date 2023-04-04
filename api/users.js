@@ -1,7 +1,8 @@
 const express = require('express');
 const usersRouter = express.Router();
 const { getUserByUsername, createUser, getUserById } = require('../db/users');
-const { getPublicRoutinesByUser } = require('../db/routines');
+const { getPublicRoutinesByUser, getAllRoutinesByUser } = require('../db/routines');
+const { requireUser } = require('./require');
 const { compare } = require('bcrypt');
 const { sign } = require('jsonwebtoken');
 const { JWT_SECRET } = process.env;
@@ -17,15 +18,35 @@ usersRouter.post('/register', async (req, res, next) => {
 		const user = await getUserByUsername(username);
 
 		if (user) {
+			res.send({ 
+				error: "Duplicate Username",
+				message: `User ${user.username} is already taken.`,
+				name: "Error"
+			});
 			throw Error('A user by that username already exists');
 		}
 
 		if (password.length < 8) {
+			res.send({ 
+				error: "Short password",
+				message: `Password Too Short!`,
+				name: "Error"
+			});
 			throw Error('Password Too Short!');
 		}
 		const newUser = await createUser({ username, password });
 
-		res.send({ user: newUser });
+		let payload = { 
+			"id" : newUser.id,
+			"username" : `${newUser.username}`
+		};
+		let token = sign( payload, JWT_SECRET,  { noTimestamp:true, expiresIn: '1h' });
+
+		res.send({ 
+			message: "thank you for signing up",
+			token: `${token}`,
+			user: newUser
+		});
 	} catch ({ name, message }) {
 		next({ name, message });
 	}
@@ -52,12 +73,20 @@ usersRouter.post('/login', async (req, res, next) => {
 		}
 
 		if (user && match) {
-			const token = sign(
-				{ id: user.id, username: user.username },
-				JWT_SECRET
-			);
+			let payload = { 
+				"id" : user.id,
+				"username" : `${user.username}`
+			};
+			let token = sign( payload, JWT_SECRET,  { noTimestamp:true, expiresIn: '1h' });
 
-			res.send({ message: 'You are logged in!', token });
+			res.send({ 
+				token: token,
+				user: {
+					id: user.id,
+					username: `${user.username}`
+					},
+				message: "you're logged in!"
+			});
 		}
 	} catch ({ name, message }) {
 		next({ name, message });
@@ -83,27 +112,22 @@ usersRouter.get('/:username/routines', async (req, res, next) => {
 
 	try {
 		const publicRoutines = await getPublicRoutinesByUser({ username });
+		const allRoutines = await getAllRoutinesByUser({ username })
 
 		if (publicRoutines) {
 			res.send(publicRoutines);
 		} else {
 			res.send({ message: 'No public routines available' });
 		}
+
+		if (allRoutines) {
+			res.send(allRoutines);
+		} else {
+			res.send({ message: 'No routines available' });
+		}
 	} catch ({ name, message }) {
 		next({ name, message });
 	}
 });
-
-const requireUser = (req, res, next) => {
-	if (!req.user) {
-		next({
-			name: 'AuthError',
-			message: 'You must be logged in to perform this action'
-		});
-	} else {
-		console.log('User is set');
-		return next();
-	}
-};
 
 module.exports = { usersRouter };

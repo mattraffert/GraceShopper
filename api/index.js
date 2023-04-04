@@ -3,7 +3,7 @@ const apiRouter = express.Router();
 const { usersRouter } = require('./users');
 const { activitiesRouter } = require('./activities');
 const { routinesRouter } = require('./routines');
-const { routineActivitiesRouter } = require('./routine_activities');
+const { routineActivitiesRouter } = require('./routineActivities');
 
 const { verify } = require('jsonwebtoken');
 const { JWT_SECRET } = process.env;

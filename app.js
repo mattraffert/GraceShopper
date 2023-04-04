@@ -1,29 +1,27 @@
-const express = require('express');
-const morgan = require('morgan');
+require("dotenv").config();
+const express = require("express");
+const app = express();
 const cors = require('cors');
 const client = require('./db/client');
-require('dotenv').config();
 
-const server = express();
-const { PORT = 3000 } = process.env;
-const { apiRouter } = require('./api/index');
 
-server.use(cors());
-server.use(express.json());
-server.use(express.urlencoded({ extended: true }));
-server.use(morgan('dev'));
-server.use('/api', apiRouter);
+const  {apiRouter} = require('./api/index');
 
-server.use((req, res, next) => {
-	res.sendStatus(404);
+// Setup your Middleware and API Router here
+
+app.use(cors());
+app.use(express.json());
+// app.use(express.urlencoded({ extended: true }));
+app.use('/api', apiRouter);
+
+app.use((req, res, next) => {
+    res.sendStatus(404);
 });
 
-server.use((error, req, res, next) => {
-	console.log('Server Log', error);
-	res.send(error);
+app.use((error, req, res, next) => {
+    console.log('Server Log', error);
+    res.send(error);
 });
 
-server.listen(PORT, () => {
-	client.connect();
-	console.log(`Listening on port ${PORT}`);
-});
+
+module.exports = app;
