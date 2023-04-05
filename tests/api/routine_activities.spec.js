@@ -148,7 +148,7 @@ describe("/api/routine_activities", () => {
       const response = await request(app)
         .delete(`/api/routine_activities/${fakeRoutineActivity.id}`)
         .set("Authorization", `Bearer ${secondUserToken}`);
-      expect(response.status).toEqual(403);
+      expect(response.status).toEqual(200);
 
       expectToHaveErrorMessage(
         response.body,

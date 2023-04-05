@@ -101,6 +101,13 @@ usersRouter.get('/me', requireUser, async (req, res, next) => {
 
 		if (userData) {
 			res.send(userData);
+		} else {
+			res.send({ 
+				error: "No logged in user",
+				message: "You must be logged in to perform this action",
+				name: "Error"
+			});
+			throw Error("No user")
 		}
 	} catch ({ name, message }) {
 		next({ name, message });
@@ -120,11 +127,24 @@ usersRouter.get('/:username/routines', async (req, res, next) => {
 			res.send({ message: 'No public routines available' });
 		}
 
+	} catch ({ name, message }) {
+		next({ name, message });
+	}
+});
+
+usersRouter.get('/:username/allroutines', async (req, res, next) => {
+	const { username } = req.params;
+
+	try {
+		const publicRoutines = await getPublicRoutinesByUser({ username });
+		const allRoutines = await getAllRoutinesByUser({ username })
+
 		if (allRoutines) {
 			res.send(allRoutines);
 		} else {
 			res.send({ message: 'No routines available' });
 		}
+
 	} catch ({ name, message }) {
 		next({ name, message });
 	}

@@ -7,6 +7,7 @@ const {
 	destroyRoutineActivity
 } = require('../db/routine_activities.js');
 const { getRoutineById } = require('../db/routines.js');
+const { getUserById } = require('../db');
 
 routineActivitiesRouter.patch(
 	'/:routineActivityId',
@@ -21,9 +22,14 @@ routineActivitiesRouter.patch(
 			const routineId = routineActivity.routineId;
 			const routine = await getRoutineById(routineId);
 			const creatorId = routine.creatorId;
+			const username = await getUserById(userId)
 
 			if (creatorId !== userId) {
-				return res.send('you dont own this routine');
+				return res.send({ 
+					error: "Not owner",
+					message: `User ${username.username} is not allowed to update ${routine.name}`,
+					name: "Error"
+				});
 			}
 
 			if (Object.keys(req.body).length === 0) {
@@ -55,9 +61,14 @@ routineActivitiesRouter.delete(
 			const routineId = routineActivity.routineId;
 			const routine = await getRoutineById(routineId);
 			const creatorId = routine.creatorId;
+			const username = await getUserById(userId)
 
 			if (creatorId !== userId) {
-				return res.send('you dont own this routine');
+				return res.send({ 
+					error: "Not owner",
+					message: `User ${username.username} is not allowed to delete ${routine.name}`,
+					name: "Error"
+				});
 			}
 
 			const destroyedRoutineActivity = await destroyRoutineActivity(id);
