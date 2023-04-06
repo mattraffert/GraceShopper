@@ -47,7 +47,7 @@ async function getRoutineActivityById(id) {
   }
 }
 
-async function getRoutineActivitiesByRoutine(id) {
+async function getRoutineActivitiesByRoutine({ id }) {
   try {
     console.log(`Finding routine activities by routine ${id}...`, id)
     const { rows } = await client.query(`

@@ -82,7 +82,7 @@ describe("DB Routine Activities", () => {
         fakeActivity.id
       );
       const [routineActivity] = await getRoutineActivitiesByRoutine(
-        fakeRoutine.id
+        fakeRoutine
       );
       expect(routineActivity.id).toEqual(fakeRoutineActivity.id);
     });

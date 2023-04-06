@@ -100,7 +100,8 @@ routinesRouter.post('/:routineId/activities', async (req, res, next) => {
 	const { activityId, count, duration } = req.body;
 	const existsActivity = await getActivityById(activityId)
 	const existsRoutine = await getRoutineById(routineId)
-	const existsRA = await getRoutineActivitiesByRoutine(routineId)
+	const existsRA = await getRoutineActivitiesByRoutine(existsRoutine)
+	const filteredRA = existsRA.filter(element => element.activityId === activityId)
 
 	if (!activityId || !count || !duration) {
 		res.send({ message: 'Missing fields' });
@@ -114,19 +115,26 @@ routinesRouter.post('/:routineId/activities', async (req, res, next) => {
 			duration
 		});
 
-		for (let i = 0 ; i <= existsRA.length ; i++) {
-
-			console.log("AAAAAAAAAAAAAAAAAAAAAAA", existsActivity.id, existsRA[i])
-
-			if (existsActivity.id == existsRA[i].activityId) {
-				res.send({
-					error: "String",
-					message: `Activity ID ${activityId} already exists in Routine ID ${routineId}`,
-					name: "String"
-				});
-			}
-			res.send(newRoutineActivity)
+		if (filteredRA.length) {
+			res.send({
+				error: "String",
+				message: `Activity ID ${activityId} already exists in Routine ID ${routineId}`,
+				name: "String"
+			});
 		}
+
+		// for (let i = 0 ; i <= existsRA.length ; i++) {
+
+		// 	console.log("AAAAAAAAAAAAAAAAAAAAAAA", existsActivity.id, existsRA[i])
+
+		// 	if (existsActivity.id == existsRA[i].activityId) {
+		// 		res.send({
+		// 			error: "String",
+		// 			message: `Activity ID ${activityId} already exists in Routine ID ${routineId}`,
+		// 			name: "String"
+		// 		});
+		// 	}
+		// }
 
 		res.send(newRoutineActivity);
 	} catch ({ name, message }) {
