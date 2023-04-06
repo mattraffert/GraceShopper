@@ -47,16 +47,16 @@ async function getRoutineActivityById(id) {
   }
 }
 
-async function getRoutineActivitiesByRoutine({ id }) {
+async function getRoutineActivitiesByRoutine(id) {
   try {
-    console.log(`Finding routine activities by routine ${id}...`)
+    console.log(`Finding routine activities by routine ${id}...`, id)
     const { rows } = await client.query(`
     SELECT *
     FROM routine_activities
     WHERE "routineId"=$1;
     `, [id]);
 
-    console.log(`Found routine activities by routine ${id}!`);
+    console.log(`Found routine activities by routine ${id}!`, rows);
     return rows;
 
   } catch (error) {

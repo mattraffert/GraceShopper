@@ -4,10 +4,13 @@ const {
 	getAllPublicRoutines,
 	createRoutine,
 	updateRoutine,
-	destroyRoutine
+	destroyRoutine,
+	getRoutineById
 } = require('../db/routines');
-const { addActivityToRoutine } = require('../db/routine_activities');
+const { addActivityToRoutine, getRoutineActivitiesByRoutine } = require('../db/routine_activities');
+const { getActivityById } = require('../db/activities');
 const { requireUser } = require('./require');
+const { getUserById } = require('../db/users');
 
 routinesRouter.get('/', async (req, res, next) => {
 	try {
@@ -23,6 +26,7 @@ routinesRouter.post('/', requireUser, async (req, res, next) => {
 	const creatorId = req.user.id;
 
 	try {
+
 		if (creatorId && isPublic && name && goal) {
 			const newRoutine = await createRoutine({
 				creatorId,
@@ -41,8 +45,20 @@ routinesRouter.post('/', requireUser, async (req, res, next) => {
 
 routinesRouter.patch('/:routineId', requireUser, async (req, res, next) => {
 	const { routineId } = req.params;
-
+	const creatorId = req.user.id;
+	const user = await getUserById(creatorId)
+	const routineName = await getRoutineById(routineId)
+	
 	try {
+
+		if (user.id !== routineName.creatorId) {
+			next({ 
+				error: "Incorrect user",
+				message: `User ${user.username} is not allowed to update ${routineName.name}`,
+				name: "Error"
+			});
+		}
+
 		if (Object.keys(req.body).length === 0) {
 			throw Error('No update fields');
 		}
@@ -58,8 +74,20 @@ routinesRouter.patch('/:routineId', requireUser, async (req, res, next) => {
 
 routinesRouter.delete('/:routineId', requireUser, async (req, res, next) => {
 	const { routineId } = req.params;
+	const creatorId = req.user.id;
+	const user = await getUserById(creatorId)
+	const routineName = await getRoutineById(routineId)
 
 	try {
+
+		if (user.id !== routineName.creatorId) {
+			next({ 
+				error: "Incorrect user",
+				message: `User ${user.username} is not allowed to delete ${routineName.name}`,
+				name: "Error"
+			});
+		}
+
 		const deletedRoutine = await destroyRoutine(routineId);
 		res.send(deletedRoutine);
 	} catch ({ name, message }) {
@@ -70,6 +98,9 @@ routinesRouter.delete('/:routineId', requireUser, async (req, res, next) => {
 routinesRouter.post('/:routineId/activities', async (req, res, next) => {
 	const { routineId } = req.params;
 	const { activityId, count, duration } = req.body;
+	const existsActivity = await getActivityById(activityId)
+	const existsRoutine = await getRoutineById(routineId)
+	const existsRA = await getRoutineActivitiesByRoutine(routineId)
 
 	if (!activityId || !count || !duration) {
 		res.send({ message: 'Missing fields' });
@@ -82,6 +113,21 @@ routinesRouter.post('/:routineId/activities', async (req, res, next) => {
 			count,
 			duration
 		});
+
+		for (let i = 0 ; i <= existsRA.length ; i++) {
+
+			console.log("AAAAAAAAAAAAAAAAAAAAAAA", existsActivity.id, existsRA[i])
+
+			if (existsActivity.id == existsRA[i].activityId) {
+				res.send({
+					error: "String",
+					message: `Activity ID ${activityId} already exists in Routine ID ${routineId}`,
+					name: "String"
+				});
+			}
+			res.send(newRoutineActivity)
+		}
+
 		res.send(newRoutineActivity);
 	} catch ({ name, message }) {
 		next({ name, message });
