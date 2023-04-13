@@ -6,47 +6,47 @@ const { compare, hash } = require('bcrypt');
 // database functions
 
 // user functions
-async function createUser({ username, password }) {
+async function createUser({ email, password }) {
   const SALT_COUNT = 10;
   const hashedPassword = await hash(password, SALT_COUNT)
   try {
-    console.log(`Creating new user ${username}...`)
+    console.log(`Creating new user ${email}...`)
     
     const { rows: [user] } = await client.query (`
-    INSERT INTO users(username, password) 
+    INSERT INTO users(email, password) 
     VALUES($1, $2) 
-    ON CONFLICT (username) DO NOTHING 
+    ON CONFLICT (email) DO NOTHING 
     RETURNING *;
-    `, [username, hashedPassword]);
+    `, [email, hashedPassword]);
 
     delete user.password;
   
-    console.log(`Finished creating new user ${username}!`)
+    console.log(`Finished creating new user ${email}!`)
     return user;
     } catch (error) {
-      console.error(`Error creating new user ${username}!`)
+      console.error(`Error creating new user ${email}!`)
       throw error;
     }
 }
 
 
 
-async function getUser({ username, password }) {
+async function getUser({ email, password }) {
   
   try {
-    console.log(`Getting user ${username}...`)
-    const user = await getUserByUsername(username);
+    console.log(`Getting user ${email}...`)
+    const user = await getUserByEmail(email);
 		const hashedPass = user.password;
 		const match = await compare(password, hashedPass);
 
 		if (match) {
       delete user.password;
-      console.log(`Found user ${username}!`, user)
+      console.log(`Found user ${email}!`, user)
       return user
     }
     
     } catch (error) {
-      console.error(`Error getting user ${username}!`)
+      console.error(`Error getting user ${email}!`)
       throw error;
     }
 }
@@ -60,7 +60,7 @@ async function getUserById(userId) {
     WHERE id=$1;
     `, [userId]);
 
-    delete rows[0].password;
+    delete rows[0].email;
 
     console.log(`Found user by id ${userId}!`);
     return rows[0];
@@ -71,19 +71,19 @@ async function getUserById(userId) {
   }
 }
 
-async function getUserByUsername(userName) {
+async function getUserByEmail(email) {
   try {
-    console.log(`Getting user by username ${userName}...`)
+    console.log(`Getting user by username ${email}...`)
     const { rows: [user] } = await client.query (`
     SELECT *
     FROM users
-    WHERE username=$1;
-    `, [userName]);
+    WHERE email=$1;
+    `, [email]);
   
-    console.log(`Found user by username ${userName}!`)
+    console.log(`Found user by username ${email}!`)
     return user;
     } catch (error) {
-      console.error(`Error getting user by username ${userName}!`)
+      console.error(`Error getting user by username ${email}!`)
       throw error;
     }
 }
@@ -92,5 +92,5 @@ module.exports = {
   createUser,
   getUser,
   getUserById,
-  getUserByUsername,
+  getUserByEmail,
 }
