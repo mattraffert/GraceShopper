@@ -66,7 +66,7 @@ async function createTables() {
   CREATE TABLE reviews(
     id SERIAL PRIMARY KEY,
     "creatorId" INTEGER REFERENCES users (id),
-    "productId" INTEGER REFERENCES products (id),
+    "itemId" INTEGER REFERENCES products (id),
     title TEXT NOT NULL,
     description TEXT NOT NULL
   );

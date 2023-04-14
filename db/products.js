@@ -188,11 +188,18 @@ async function destroyProduct(id) {
       
       await client.query(`
         DELETE FROM order 
-        WHERE id = $1
+        WHERE "productId" = $1
         RETURNING *;
         `, [id]);
+
+    await client.query(`
+        DELETE FROM reviews 
+        WHERE "productId" = $1
+        RETURNING *;
+        `, [id]);
+
       const { rows: [deletedProduct] } = await client.query(`
-      DELETE FROM routines
+      DELETE FROM products
       WHERE id=$1
       RETURNING *;
       `, [id]);
@@ -214,4 +221,5 @@ module.exports = {
     attachProductToUser,
     createProduct,
     updateProduct,
+    destroyProduct
 };
