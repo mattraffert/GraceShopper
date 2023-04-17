@@ -1,7 +1,8 @@
 const express = require('express');
 const usersRouter = express.Router();
-const { getUserByUsername, createUser, getUserById } = require('../db/users');
-const { getPublicRoutinesByUser, getAllRoutinesByUser } = require('../db/routines');
+const { getUserByEmail, createUser, getUserById } = require('../db/users');
+const { getOrderByUser } = require('../db/order');
+const { getReviewByUser } = require('../db/reviews');
 const { requireUser } = require('./require');
 const { compare } = require('bcrypt');
 const { sign } = require('jsonwebtoken');
@@ -9,18 +10,18 @@ const { JWT_SECRET } = process.env;
 
 usersRouter.post('/register', async (req, res, next) => {
 	try {
-		const { username, password } = req.body;
+		const { email, password } = req.body;
 
-		if (!username || !password) {
+		if (!email || !password) {
 			throw Error('Missing fields');
 		}
 
-		const user = await getUserByUsername(username);
+		const user = await getUserByEmail(email);
 
 		if (user) {
 			res.send({ 
 				error: "Duplicate Username",
-				message: `User ${user.username} is already taken.`,
+				message: `User ${user.email} is already taken.`,
 				name: "Error"
 			});
 			throw Error('A user by that username already exists');
@@ -34,11 +35,11 @@ usersRouter.post('/register', async (req, res, next) => {
 			});
 			throw Error('Password Too Short!');
 		}
-		const newUser = await createUser({ username, password });
+		const newUser = await createUser({ email, password });
 
 		let payload = { 
 			"id" : newUser.id,
-			"username" : `${newUser.username}`
+			"email" : `${newUser.email}`
 		};
 		let token = sign( payload, JWT_SECRET,  { noTimestamp:true, expiresIn: '1h' });
 
@@ -54,16 +55,16 @@ usersRouter.post('/register', async (req, res, next) => {
 
 usersRouter.post('/login', async (req, res, next) => {
 	try {
-		const { username, password } = req.body;
+		const { email, password } = req.body;
 
-		if (!username || !password) {
-			throw Error('Missing password or username credentials');
+		if (!email || !password) {
+			throw Error('Missing password or email credentials');
 		}
 
-		const user = await getUserByUsername(username);
+		const user = await getUserByEmail(email);
 
 		if (!user) {
-			throw Error('User does not exist');
+			throw Error('Email does not exist');
 		}
 
 		const match = await compare(password, user.password);
@@ -75,7 +76,7 @@ usersRouter.post('/login', async (req, res, next) => {
 		if (user && match) {
 			let payload = { 
 				"id" : user.id,
-				"username" : `${user.username}`
+				"email" : `${user.email}`
 			};
 			let token = sign( payload, JWT_SECRET,  { noTimestamp:true, expiresIn: '1h' });
 
@@ -83,7 +84,7 @@ usersRouter.post('/login', async (req, res, next) => {
 				token: token,
 				user: {
 					id: user.id,
-					username: `${user.username}`
+					email: `${user.email}`
 					},
 				message: "you're logged in!"
 			});
@@ -114,17 +115,16 @@ usersRouter.get('/me', requireUser, async (req, res, next) => {
 	}
 });
 
-usersRouter.get('/:username/routines', async (req, res, next) => {
-	const { username } = req.params;
+usersRouter.get('/:username/order', async (req, res, next) => {
+	const { email } = req.params;
 
 	try {
-		const publicRoutines = await getPublicRoutinesByUser({ username });
-		const allRoutines = await getAllRoutinesByUser({ username })
+		const order = await getOrderByUser({ email });
 
-		if (publicRoutines) {
-			res.send(publicRoutines);
+		if (order) {
+			res.send(order);
 		} else {
-			res.send({ message: 'No public routines available' });
+			res.send({ message: 'No order available' });
 		}
 
 	} catch ({ name, message }) {
@@ -132,17 +132,16 @@ usersRouter.get('/:username/routines', async (req, res, next) => {
 	}
 });
 
-usersRouter.get('/:username/allroutines', async (req, res, next) => {
-	const { username } = req.params;
+usersRouter.get('/:username/reviews', async (req, res, next) => {
+	const { email } = req.params;
 
 	try {
-		const publicRoutines = await getPublicRoutinesByUser({ username });
-		const allRoutines = await getAllRoutinesByUser({ username })
+		const reviews = await getReviewByUser({ email })
 
-		if (allRoutines) {
-			res.send(allRoutines);
+		if (reviews) {
+			res.send(reviews);
 		} else {
-			res.send({ message: 'No routines available' });
+			res.send({ message: 'No reviews available' });
 		}
 
 	} catch ({ name, message }) {

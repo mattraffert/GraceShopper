@@ -26,7 +26,7 @@ async function dropTables() {
   await client.query(`
     DROP TABLE IF EXISTS users CASCADE;
     DROP TABLE IF EXISTS products CASCADE;
-    DROP TABLE IF EXISTS order CASCADE;
+    DROP TABLE IF EXISTS orders CASCADE;
     DROP TABLE IF EXISTS reviews CASCADE;
   `);
     console.log("Finished dropping tables");
@@ -54,13 +54,12 @@ async function createTables() {
     inventory INTEGER,
     "petType" TEXT NOT NULL
   );
-  CREATE TABLE order(
+  CREATE TABLE orders(
     id SERIAL PRIMARY KEY,
     "userId" INTEGER REFERENCES users (id),
-    "productPrice" INTEGER REFERENCES products (price),
     "productId" INTEGER REFERENCES products (id),
     quantity INTEGER,
-    active BOOLEAN DEFAULT true 
+    active BOOLEAN DEFAULT true,
     UNIQUE ("userId", "productId")
   );
   CREATE TABLE reviews(

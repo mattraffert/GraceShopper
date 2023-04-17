@@ -2,7 +2,6 @@ const client = require("./client");
 
 async function addProductToUser({
     userId,
-    productPrice,
     productId,
     quantity,
     active
@@ -10,12 +9,11 @@ async function addProductToUser({
   try {
     console.log(`Adding new product to user...`)
     const { rows: [ order ] } = await client.query (`
-    INSERT INTO order("userId", "productPrice", "productId", quantity, active) 
-    VALUES($1, $2, $3, $4, $5) 
+    INSERT INTO orders("userId", "productId", quantity, active) 
+    VALUES($1, $2, $3, $4) 
     ON CONFLICT ("userId", "productId") DO NOTHING
     RETURNING *;
     `, [ userId,
-        productPrice,
         productId,
         quantity,
         active ]);
@@ -33,7 +31,7 @@ async function getOrderById(id) {
     console.log(`Finding order by Id ${id}...`)
     const { rows } = await client.query(`
     SELECT *
-    FROM order
+    FROM orders
     WHERE id=$1;
     `, [id]);
 
@@ -51,7 +49,7 @@ async function getOrderByUser({ id }) {
     console.log(`Finding order by user ${id}...`, id)
     const { rows } = await client.query(`
     SELECT *
-    FROM order
+    FROM orders
     WHERE "userId"=$1;
     `, [id]);
 
@@ -85,7 +83,7 @@ async function updateOrder({ id, ...fields }) {
     }
 
     const { rows: [ order ] } = await client.query(`
-      UPDATE order
+      UPDATE orders
       SET quantity=$2, active=$3
       WHERE id=$1
       RETURNING *;
@@ -105,7 +103,7 @@ async function destroyOrder(id) {
     console.log(`Destroying order ${id}...`)
     const { rows: [deleted] } = await client.query(`
     DELETE 
-    FROM order
+    FROM orders
     WHERE id=$1
     RETURNING *;
     `, [id]);
@@ -124,7 +122,7 @@ async function canEditOrder(orderId, userId) {
   // console.log(`Editing routine activity ${routineActivityId} by ${userId}...`)
   const {rows: [editedOrder] } = await client.query(`
   SELECT * 
-  FROM order
+  FROM orders
   JOIN users
   ON users.id = 
   order."userId"
