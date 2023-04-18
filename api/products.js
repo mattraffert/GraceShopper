@@ -10,7 +10,6 @@ const {
 } = require('../db/products');
 const { getReviewByProduct } = require('../db/reviews');
 const { requireUser } = require('./require');
-const { getUserById } = require('../db/users');
 
 productsRouter.get('/', async (req, res, next) => {
 	try {
