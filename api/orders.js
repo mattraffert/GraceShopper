@@ -4,10 +4,8 @@ const { requireUser } = require('./require');
 const {
 	getOrderById,
 	updateOrder,
-	destroyRoutineActivity
+	destroyOrder
 } = require('../db/order.js');
-const { getRoutineById } = require('../db/routines.js');
-const { getUserById } = require('../db');
 
 ordersRouter.patch(
 	'/:orderId',
@@ -19,14 +17,13 @@ ordersRouter.patch(
 
 		try {
 			const order = await getOrderById(id);
-			const userId = order.userId;
-			const user = await getUserById(userId);
-			const creatorId = user.id;
+			const creatorId = order.userId;
+			
 
 			if (creatorId !== userId) {
 				return res.send({ 
 					error: "Not owner",
-					message: `User ${user.email} is not allowed to update order`,
+					message: `User is not allowed to update order`,
 					name: "Error"
 				});
 			}
@@ -48,30 +45,27 @@ ordersRouter.patch(
 	}
 );
 
-routineActivitiesRouter.delete(
-	'/:routineActivityId',
+ordersRouter.delete(
+	'/:orderId',
 	requireUser,
 	async (req, res, next) => {
-		const id = req.params.routineActivityId;
+		const id = req.params.orderId;
 		const userId = req.user.id;
 
 		try {
-			const routineActivity = await getRoutineActivityById(id);
-			const routineId = routineActivity.routineId;
-			const routine = await getRoutineById(routineId);
-			const creatorId = routine.creatorId;
-			const username = await getUserById(userId)
+			const order = await getOrderById(id);
+			const creatorId = order.userId;
 
 			if (creatorId !== userId) {
 				return res.send({ 
 					error: "Not owner",
-					message: `User ${username.username} is not allowed to delete ${routine.name}`,
+					message: `User is not allowed to delete this order.`,
 					name: "Error"
 				});
 			}
 
-			const destroyedRoutineActivity = await destroyRoutineActivity(id);
-			res.send(destroyedRoutineActivity);
+			const destroyedOrder = await destroyOrder(id);
+			res.send(destroyedOrder);
 		} catch ({ name, message }) {
 			next({ name, message });
 		}
