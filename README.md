@@ -1,6 +1,7 @@
 # fitnesstrackr
 
-an API for our new fitness empire, FitnessTrac.kr, using node, express, and postgresql
+an API for our capstone project, Sweater For Pets, using node, express, and postgresql
+
 
 ## Getting Started
 
@@ -10,11 +11,29 @@ Install Packages
 
 Initialize Database
 
-    createdb fitness-dev
+    createdb graceshopper
 
 Run Seed Script
 
     npm run seed:dev
+
+## DB File Breakdown
+
+client.js file connects to the database built using postgresql
+
+index.js adds and exports the keys and values from files within db folder to use in the api calls
+
+order.js create functions to add product to db
+
+Product
+
+Reviews
+
+Seed
+
+seedData.js creates tables for the database
+
+users.js hashes users passwords, creates a new user and adds their credentials to the database, and gets the user by email or id.
 
 ## Automated Tests
 
