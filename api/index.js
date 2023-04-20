@@ -1,8 +1,8 @@
 const express = require('express');
 const apiRouter = express.Router();
 const { usersRouter } = require('./users');
-const { activitiesRouter } = require('./activities');
-const { routinesRouter } = require('./routines');
+const { productsRouter } = require('./products');
+const { ordersRouter } = require('./orders');
 const { routineActivitiesRouter } = require('./routineActivities');
 
 const { verify } = require('jsonwebtoken');
@@ -35,8 +35,8 @@ apiRouter.use('/', async (req, res, next) => {
 });
 
 apiRouter.use('/users', usersRouter);
-apiRouter.use('/activities', activitiesRouter);
-apiRouter.use('/routines', routinesRouter);
+apiRouter.use('/products', productsRouter);
+apiRouter.use('/orders', ordersRouter);
 apiRouter.use('/routine_activities', routineActivitiesRouter);
 
 apiRouter.get('/health', (req, res, next) => {

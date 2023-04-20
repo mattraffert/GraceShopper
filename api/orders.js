@@ -72,4 +72,4 @@ ordersRouter.delete(
 	}
 );
 
-module.exports = { routineActivitiesRouter };
+module.exports = { ordersRouter };
