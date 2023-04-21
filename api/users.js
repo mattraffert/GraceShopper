@@ -1,6 +1,6 @@
 const express = require('express');
 const usersRouter = express.Router();
-const { getUserByEmail, createUser, getUserById, updateUser } = require('../db/users');
+const { getUserByEmail, createUser, getUserById, updateUser, getAllUsers } = require('../db/users');
 const { getOrderByUser } = require('../db/order');
 const { getReviewByUser } = require('../db/reviews');
 const { requireUser } = require('./require');
@@ -173,6 +173,22 @@ usersRouter.patch('/:userId', requireUser, async (req, res, next) => {
 		}
 	} catch ({name, message}) {
 		next({name, message})
+	}
+})
+
+usersRouter.get('/', async (req, res, next) => {
+	try{
+		const allUsers = await getAllUsers();
+
+		if (allUsers) {
+			res.send(allUsers);
+		} else {
+			res.send({
+				message: `No users found`
+			})
+		}
+	} catch ({ name, message }) {
+		next ({ name, message })
 	}
 })
 
