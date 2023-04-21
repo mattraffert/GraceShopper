@@ -1,6 +1,6 @@
 const express = require('express');
 const usersRouter = express.Router();
-const { getUserByEmail, createUser, getUserById } = require('../db/users');
+const { getUserByEmail, createUser, getUserById, updateUser } = require('../db/users');
 const { getOrderByUser } = require('../db/order');
 const { getReviewByUser } = require('../db/reviews');
 const { requireUser } = require('./require');
@@ -148,6 +148,33 @@ usersRouter.get('/:username/reviews', async (req, res, next) => {
 		next({ name, message });
 	}
 });
+
+usersRouter.patch('/:userId', requireUser, async (req, res, next) => {
+	const { admin, engineer } = req.body;
+	const { userId } = req.params;
+	const userExists = await getUserById(userId);
+
+	try{
+		if (!userExists) {
+			throw Error
+		}
+		if (userId || admin || engineer) {
+			const updatedUser = await updateUser({
+				id: userId,
+				admin,
+				engineer
+			});
+
+			res.send(updatedUser)
+		} else {
+			res.send({
+				message: `Missing fields`
+			})
+		}
+	} catch ({name, message}) {
+		next({name, message})
+	}
+})
 
 module.exports = { usersRouter };
 // comment

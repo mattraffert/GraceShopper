@@ -88,9 +88,42 @@ async function getUserByEmail(email) {
     }
 }
 
+async function updateUser({ id, ...fields }) {
+  console.log("fields", fields.admin, fields.engineer);
+  const origFields = await getUserById(id);
+  let newAdmin
+  let newEngineer
+
+  try{
+    if(fields.admin = undefined) {
+      newAdmin = origFields.admin;
+    } else {
+      newAdmin = fields.admin;
+    }
+
+    if(fields.engineer = undefined) {
+      newEngineer = origFields.engineer;
+    } else {
+      newEngineer = fields.engineer;
+    }
+    const { rows: [ user ] } = await client.query(`
+      UPDATE users
+      SET admin = $1, engineer = $2
+      WHERE id = $3
+      RETURNING *;
+    `, [newAdmin, newEngineer, id])
+
+    console.log("Sucessfully updated user");
+    return user;
+  } catch (error) {
+    console.log(`Error updating user`)
+  } throw error;
+}
+
 module.exports = {
   createUser,
   getUser,
   getUserById,
   getUserByEmail,
+  updateUser
 }
