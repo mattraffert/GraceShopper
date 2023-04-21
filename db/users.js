@@ -71,6 +71,18 @@ async function getUserById(userId) {
   }
 }
 
+async function getAllUsers() {
+  try {
+    const { rows } = await client.query(`
+    SELECT *
+    FROM users
+    `)
+    return rows;
+  } catch (error) {
+    throw (error);
+  }
+}
+
 async function getUserByEmail(email) {
   try {
     console.log(`Getting user by username ${email}...`)
@@ -123,6 +135,7 @@ async function updateUser({ id, ...fields }) {
 module.exports = {
   createUser,
   getUser,
+  getAllUsers,
   getUserById,
   getUserByEmail,
   updateUser
