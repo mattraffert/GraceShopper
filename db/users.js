@@ -79,6 +79,7 @@ async function getAllUsers() {
     `)
     return rows;
   } catch (error) {
+    console.log(error)
     throw (error);
   }
 }
@@ -120,8 +121,8 @@ async function updateUser({ id, ...fields }) {
     }
     const { rows: [ user ] } = await client.query(`
       UPDATE users
-      SET admin = $1, engineer = $2
-      WHERE id = $3
+      SET admin=$1, engineer=$2
+      WHERE id=$3
       RETURNING *;
     `, [newAdmin, newEngineer, id])
 
