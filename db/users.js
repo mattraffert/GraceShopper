@@ -107,13 +107,13 @@ async function updateUser({ id, ...fields }) {
   let newEngineer
 
   try{
-    if(fields.admin = undefined) {
+    if(fields.admin == undefined) {
       newAdmin = origFields.admin;
     } else {
       newAdmin = fields.admin;
     }
 
-    if(fields.engineer = undefined) {
+    if(fields.engineer == undefined) {
       newEngineer = origFields.engineer;
     } else {
       newEngineer = fields.engineer;
@@ -129,7 +129,7 @@ async function updateUser({ id, ...fields }) {
     return user;
   } catch (error) {
     console.log(`Error updating user`)
-  } throw error;
+    throw error } 
 }
 
 module.exports = {
