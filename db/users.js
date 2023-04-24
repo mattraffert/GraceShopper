@@ -13,8 +13,8 @@ async function createUser({ email, password }) {
     console.log(`Creating new user ${email}...`)
     
     const { rows: [user] } = await client.query (`
-    INSERT INTO users(email, password, admin, engineer) 
-    VALUES($1, $2, $3, $4) 
+    INSERT INTO users(email, password) 
+    VALUES($1, $2) 
     ON CONFLICT (email) DO NOTHING 
     RETURNING *;
     `, [email, hashedPassword]);
