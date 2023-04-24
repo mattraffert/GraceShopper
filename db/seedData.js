@@ -54,7 +54,8 @@ async function createTables() {
     description TEXT NOT NULL,
     price INTEGER,
     inventory INTEGER,
-    "petType" TEXT NOT NULL
+    "petType" TEXT NOT NULL,
+    url TEXT
   );
   CREATE TABLE orders(
     id SERIAL PRIMARY KEY,

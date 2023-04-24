@@ -1,15 +1,15 @@
 const client = require('./client');
 
 // database functions
-async function createProduct({ title , description, price, inventory, petType }) {
+async function createProduct({ title , description, price, inventory, petType, url }) {
   // return the new activity
     try {
       console.log("Creating new product...")
       const { rows: [products] } = await client.query (`
-      INSERT INTO products(title, description, price, inventory, "petType") 
-      VALUES($1, $2, $3, $4, $5) 
+      INSERT INTO products(title, description, price, inventory, "petType", url) 
+      VALUES($1, $2, $3, $4, $5, $6) 
       RETURNING *;
-      `, [title , description, price, inventory, petType]);
+      `, [title , description, price, inventory, petType, url]);
     
       console.log("Finished creating new products!")
       return products;
@@ -122,13 +122,14 @@ async function updateProduct({ id, ...fields }) {
   // don't try to update the id
   // do update the name and description
   // return the updated activity
-  console.log(`Updating activity by ${id, fields.title, fields.description, fields.price, fields.inventory, fields.petType}...`)
+  console.log(`Updating activity by ${id, fields.title, fields.description, fields.price, fields.inventory, fields.petType, fields.url}...`)
   const originalProd = await getProductById(id)
   let newTitle
   let newDescription
   let newPrice
   let newInventory
   let newPetType
+  let newURL
 
   try {
 
@@ -162,6 +163,13 @@ async function updateProduct({ id, ...fields }) {
         newPetType = fields.petType
     }
 
+    if (fields.url == undefined) {
+      newURL = originalProd.url
+    } else {
+      newURL = fields.url
+    }
+
+
     const { rows: [ product ] } = await client.query(`
       UPDATE products
       SET title=$2, 
@@ -171,13 +179,13 @@ async function updateProduct({ id, ...fields }) {
       "petType"=$6 
       WHERE id=$1
       RETURNING *;
-    `, [id, newTitle, newDescription, newPrice, newInventory, newPetType]);
+    `, [id, newTitle, newDescription, newPrice, newInventory, newPetType, newURL]);
 
-    console.log(`Updated activity by ${id, fields.title, fields.description, fields.price, fields.inventory, fields.petType}!`)
+    console.log(`Updated activity by ${id, fields.title, fields.description, fields.price, fields.inventory, fields.petType, newURL}!`)
 
     return product;
   } catch (error) {
-    console.error(`Error updating activity by ${id, fields.title, fields.description, fields.price, fields.inventory, fields.petType}!`)
+    console.error(`Error updating activity by ${id, fields.title, fields.description, fields.price, fields.inventory, fields.petType, newURL}!`)
     throw error;
   }
 }
