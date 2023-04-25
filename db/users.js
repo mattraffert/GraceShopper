@@ -101,23 +101,23 @@ async function getUserByEmail(email) {
     }
 }
 
-async function updateUser({ id, ...fields }) {
-  console.log("fields", fields.admin, fields.engineer);
+async function updateUser({ id, engineer, admin }) {
+  console.log("fields", admin, engineer);
   const origFields = await getUserById(id);
   let newAdmin
   let newEngineer
 
   try{
-    if(fields.admin == undefined) {
+    if(admin == undefined) {
       newAdmin = origFields.admin;
     } else {
-      newAdmin = fields.admin;
+      newAdmin = admin;
     }
 
-    if(fields.engineer == undefined) {
+    if(engineer == undefined) {
       newEngineer = origFields.engineer;
     } else {
-      newEngineer = fields.engineer;
+      newEngineer = engineer;
     }
     const { rows: [ user ] } = await client.query(`
       UPDATE users
