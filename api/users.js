@@ -158,9 +158,8 @@ usersRouter.patch('/:userId', requireUser, async (req, res, next) => {
 		if (!userExists) {
 			throw Error
 		}
-		if (userId || admin || engineer) {
+		if (admin || engineer) {
 			const updatedUser = await updateUser({
-				id: userId,
 				admin,
 				engineer
 			});
