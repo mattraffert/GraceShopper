@@ -38,7 +38,7 @@ productsRouter.post('/', requireUser, async (req, res, next) => {
 			});
 		}
 
-		if (title && description && price && inventory && petType) {
+		if (title && description && price && inventory && petType && url) {
 			const newProduct = await createProduct({ title, description, price, inventory, petType, url });
 			res.send(newProduct);
 		} else {
