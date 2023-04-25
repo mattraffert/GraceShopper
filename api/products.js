@@ -8,6 +8,13 @@ const {
 	updateProduct,
 	destroyProduct
 } = require('../db/products');
+const {
+	getUserById
+} = require('../db/users');
+const {
+	getOrderByUser,
+	addProductToUser
+} = require('../db/order');
 const { getReviewByProduct } = require('../db/reviews');
 const { requireUser } = require('./require');
 
@@ -123,6 +130,38 @@ productsRouter.delete('/:productId', requireUser, async (req, res, next) => {
 	try {
 		const deletedRoutine = await destroyProduct(productId);
 		res.send(deletedRoutine);
+	} catch ({ name, message }) {
+		next({ name, message });
+	}
+});
+
+productsRouter.post('/:productId', async (req, res, next) => {
+	const { userId } = req.params;
+	const { productId, quantity } = req.body;
+	const existsProduct = await getProductById(productId)
+	const existsUser = await getUserById(userId)
+	const existsOrder = await getOrderByUser(existsUser)
+	const filteredOrder = existsOrder.filter(element => element.productId === productId)
+
+	if (!productId || !quantity) {
+		res.send({ message: 'Missing fields' });
+	}
+
+	try {
+		const newOrder = await addProductToUser({
+			userId,
+			productId,
+			quantity
+		});
+
+		if (filteredOrder.length) {
+			res.send({
+				error: "String",
+				message: `Error`,
+				name: "String"
+			});
+		}
+		res.send(newOrder);
 	} catch ({ name, message }) {
 		next({ name, message });
 	}

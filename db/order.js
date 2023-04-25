@@ -3,20 +3,18 @@ const client = require("./client");
 async function addProductToUser({
     userId,
     productId,
-    quantity,
-    active
+    quantity
 }) {
   try {
     console.log(`Adding new product to user...`)
     const { rows: [ order ] } = await client.query (`
-    INSERT INTO orders("userId", "productId", quantity, active) 
-    VALUES($1, $2, $3, $4) 
+    INSERT INTO orders("userId", "productId", quantity) 
+    VALUES($1, $2, $3) 
     ON CONFLICT ("userId", "productId") DO NOTHING
     RETURNING *;
     `, [ userId,
         productId,
-        quantity,
-        active ]);
+        quantity]);
   
     console.log(`Finished adding product to user!`)
     return order;

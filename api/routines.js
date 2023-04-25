@@ -122,20 +122,6 @@ routinesRouter.post('/:routineId/activities', async (req, res, next) => {
 				name: "String"
 			});
 		}
-
-		// for (let i = 0 ; i <= existsRA.length ; i++) {
-
-		// 	console.log("AAAAAAAAAAAAAAAAAAAAAAA", existsActivity.id, existsRA[i])
-
-		// 	if (existsActivity.id == existsRA[i].activityId) {
-		// 		res.send({
-		// 			error: "String",
-		// 			message: `Activity ID ${activityId} already exists in Routine ID ${routineId}`,
-		// 			name: "String"
-		// 		});
-		// 	}
-		// }
-
 		res.send(newRoutineActivity);
 	} catch ({ name, message }) {
 		next({ name, message });
