@@ -27,7 +27,7 @@ productsRouter.get('/', async (req, res, next) => {
 
 productsRouter.post('/', requireUser, async (req, res, next) => {
 	try {
-		const { title, description, price, inventory, petType } = req.body;
+		const { title, description, price, inventory, petType, url } = req.body;
 		const exists = await getProductByTitle(title)
 
 		if (exists) {
@@ -39,7 +39,7 @@ productsRouter.post('/', requireUser, async (req, res, next) => {
 		}
 
 		if (title && description && price && inventory && petType) {
-			const newProduct = await createProduct({ title, description, price, inventory, petType });
+			const newProduct = await createProduct({ title, description, price, inventory, petType, url });
 			res.send(newProduct);
 		} else {
 			res.send({ message: 'Missing fields' });
