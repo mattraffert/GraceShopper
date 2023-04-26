@@ -135,7 +135,7 @@ productsRouter.delete('/:productId', requireUser, async (req, res, next) => {
 	}
 });
 
-productsRouter.post('/:productId', requireUser, async (req, res, next) => {
+productsRouter.post('/:productId/users', requireUser, async (req, res, next) => {
 	const { userId } = req.params;
 	const { productId, quantity } = req.body;
 
