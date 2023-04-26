@@ -135,25 +135,4 @@ productsRouter.delete('/:productId', requireUser, async (req, res, next) => {
 	}
 });
 
-productsRouter.post('/:productId/users', requireUser, async (req, res, next) => {
-	const { userId } = req.params;
-	const { productId, quantity } = req.body;
-
-	if (!productId || !quantity || !userId) {
-		res.send({ message: 'Missing fields' });
-	}
-
-	try {
-		const newOrder = await addProductToUser({
-			userId,
-			productId,
-			quantity
-		});
-
-		res.send(newOrder);
-	} catch ({ name, message }) {
-		next({ name, message });
-	}
-});
-
 module.exports = { productsRouter };

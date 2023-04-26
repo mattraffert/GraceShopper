@@ -6,6 +6,9 @@ const {
 	updateOrder,
 	destroyOrder
 } = require('../db/order.js');
+const {
+	addProductToUser
+} = require('../db/order');
 
 ordersRouter.patch(
 	'/:orderId',
@@ -71,5 +74,26 @@ ordersRouter.delete(
 		}
 	}
 );
+
+ordersRouter.post('/:productId/users', requireUser, async (req, res, next) => {
+	const { productId,userId } = req.params;
+	const { quantity } = req.body;
+
+	if (!productId || !quantity || !userId) {
+		res.send({ message: 'Missing fields' });
+	}
+
+	try {
+		const newOrder = await addProductToUser({
+			userId,
+			productId,
+			quantity
+		});
+
+		res.send(newOrder);
+	} catch ({ name, message }) {
+		next({ name, message });
+	}
+});
 
 module.exports = { ordersRouter };
