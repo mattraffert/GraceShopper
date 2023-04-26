@@ -76,8 +76,8 @@ ordersRouter.delete(
 );
 
 ordersRouter.post('/:productId/users', requireUser, async (req, res, next) => {
-	const { productId,userId } = req.params;
-	const { quantity } = req.body;
+	const { userId } = req.params;
+	const { productId, quantity } = req.body;
 
 	if (!productId || !quantity || !userId) {
 		res.send({ message: 'Missing fields' });
