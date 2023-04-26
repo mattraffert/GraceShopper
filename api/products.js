@@ -138,12 +138,8 @@ productsRouter.delete('/:productId', requireUser, async (req, res, next) => {
 productsRouter.post('/:productId', requireUser, async (req, res, next) => {
 	const { userId } = req.params;
 	const { productId, quantity } = req.body;
-	const existsProduct = await getProductById(productId)
-	const existsUser = await getUserById(userId)
-	const existsOrder = await getOrderByUser(existsUser)
-	const filteredOrder = existsOrder.filter(element => element.productId === productId)
 
-	if (!productId || !quantity) {
+	if (!productId || !quantity || !userId) {
 		res.send({ message: 'Missing fields' });
 	}
 
@@ -154,13 +150,6 @@ productsRouter.post('/:productId', requireUser, async (req, res, next) => {
 			quantity
 		});
 
-		if (filteredOrder.length) {
-			res.send({
-				error: "String",
-				message: `Error`,
-				name: "String"
-			});
-		}
 		res.send(newOrder);
 	} catch ({ name, message }) {
 		next({ name, message });
