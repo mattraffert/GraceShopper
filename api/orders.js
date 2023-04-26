@@ -52,22 +52,10 @@ ordersRouter.delete(
 	'/:orderId',
 	requireUser,
 	async (req, res, next) => {
-		const id = req.params.orderId;
-		const userId = req.user.id;
+		const { orderId } = req.params;
 
 		try {
-			const order = await getOrderById(id);
-			const creatorId = order.userId;
-
-			if (creatorId !== userId) {
-				return res.send({ 
-					error: "Not owner",
-					message: `User is not allowed to delete this order.`,
-					name: "Error"
-				});
-			}
-
-			const destroyedOrder = await destroyOrder(id);
+			const destroyedOrder = await destroyOrder(orderId);
 			res.send(destroyedOrder);
 		} catch ({ name, message }) {
 			next({ name, message });
