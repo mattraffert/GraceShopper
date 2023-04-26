@@ -1,7 +1,7 @@
 const express = require('express');
 const usersRouter = express.Router();
 const { getUserByEmail, createUser, getUserById, updateUser, getAllUsers } = require('../db/users');
-const { getOrderByUser } = require('../db/order');
+const { getOrderById } = require('../db/order');
 const { getReviewByUser } = require('../db/reviews');
 const { requireUser } = require('./require');
 const { compare } = require('bcrypt');
@@ -119,7 +119,7 @@ usersRouter.get('/:userId/order', async (req, res, next) => {
 	const { userId } = req.params;
 
 	try {
-		const order = await getOrderByUser({ userId });
+		const order = await getOrderById( userId );
 
 		if (order) {
 			res.send(order);
