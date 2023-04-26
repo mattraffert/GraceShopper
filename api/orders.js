@@ -79,8 +79,14 @@ ordersRouter.post('/:productId/users', requireUser, async (req, res, next) => {
 	const { userId } = req.params;
 	const { productId, quantity } = req.body;
 
-	if (!productId || !quantity || !userId) {
-		res.send({ message: 'Missing fields' });
+	if (!productId) {
+		res.send({ message: 'Missing productId' });
+	}
+	if (!quantity) {
+		res.send({ message: 'Missing quantity' });
+	}
+	if (!userId) {
+		res.send({ message: 'Missing userId' });
 	}
 
 	try {
