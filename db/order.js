@@ -30,6 +30,8 @@ async function getOrderById(id) {
     const { rows } = await client.query(`
     SELECT *
     FROM orders
+    JOIN products
+    ON product.id = order."productId"
     WHERE "userId"=$1;
     `, [id]);
 
