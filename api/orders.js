@@ -76,8 +76,8 @@ ordersRouter.delete(
 );
 
 ordersRouter.post('/:productId/users', requireUser, async (req, res, next) => {
-	const { userId } = req.params;
-	const { productId, quantity } = req.body;
+	const { productId } = req.params;
+	const { userId, quantity } = req.body;
 
 	if (!productId) {
 		res.send({ message: 'Missing productId' });
