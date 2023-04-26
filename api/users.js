@@ -115,11 +115,11 @@ usersRouter.get('/me', requireUser, async (req, res, next) => {
 	}
 });
 
-usersRouter.get('/:username/order', async (req, res, next) => {
-	const { email } = req.params;
+usersRouter.get('/:userId/order', async (req, res, next) => {
+	const { userId } = req.params;
 
 	try {
-		const order = await getOrderByUser({ email });
+		const order = await getOrderByUser({ userId });
 
 		if (order) {
 			res.send(order);
