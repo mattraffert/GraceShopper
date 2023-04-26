@@ -31,7 +31,7 @@ async function getOrderById(id) {
     SELECT *
     FROM orders
     JOIN products
-    ON product.id = order."productId"
+    ON products.id = order."productId"
     WHERE "userId"=$1;
     `, [id]);
 
