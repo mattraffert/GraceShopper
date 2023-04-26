@@ -30,11 +30,11 @@ async function getOrderById(id) {
     const { rows } = await client.query(`
     SELECT *
     FROM orders
-    WHERE id=$1;
+    WHERE "userId"=$1;
     `, [id]);
 
     console.log(`Found order by Id ${id}!`);
-    return rows[0];
+    return rows;
 
   } catch (error) {
     console.error(`Error finding order by Id ${id}!`)
