@@ -58,7 +58,7 @@ productsRouter.post('/', requireUser, async (req, res, next) => {
 });
 
 productsRouter.patch('/:productId', requireUser, async (req, res, next) => {
-	const { title, description, price, inventory, petType } = req.body;
+	const { title, description, price, inventory, petType, url } = req.body;
 	const { productId } = req.params;
 	const existsId = await getProductById(productId)
 	const existsTitle = await getProductByTitle(title)
@@ -81,14 +81,15 @@ productsRouter.patch('/:productId', requireUser, async (req, res, next) => {
 			});
 		}
 
-		if (productId || title || description || price || inventory || petType) {
+		if (productId || title || description || price || inventory || petType || url) {
 			const updatedProduct = await updateProduct({
 				id: productId,
 				title,
 				description,
 				price,
 				inventory,
-				petType
+				petType,
+				url
 			});
 			res.send(updatedProduct);
 		} else {
