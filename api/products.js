@@ -125,6 +125,25 @@ productsRouter.get('/:productId/reviews', async (req, res, next) => {
 	}
 });
 
+productsRouter.get('/:productId', async (req, res, next) => {
+	const { productId } = req.params;
+	const existsId = await getProductById(productId)
+
+	try {
+
+		if (!existsId) {
+			res.send({ 
+				error: "No product",
+				message: `Product ${productId} not found`,
+				name: "Error"
+			});
+		}
+		res.send(existsId);
+	} catch ({ name, message }) {
+		next({ name, message });
+	}
+});
+
 productsRouter.delete('/:productId', requireUser, async (req, res, next) => {
 	const { productId } = req.params;
 	try {
