@@ -48,14 +48,11 @@ ordersRouter.patch(
 	}
 );
 
-ordersRouter.delete(
-	'/:orderId',
-	requireUser,
-	async (req, res, next) => {
-		const { orderId } = req.params;
+ordersRouter.delete('/:orderId', requireUser, async (req, res, next) => {
+		const id = req.params.orderId;
 
 		try {
-			const destroyedOrder = await destroyOrder(orderId);
+			const destroyedOrder = await destroyOrder(id);
 			res.send(destroyedOrder);
 		} catch ({ name, message }) {
 			next({ name, message });
