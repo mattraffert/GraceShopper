@@ -177,7 +177,7 @@ async function updateProduct({ id, ...fields }) {
       price=$4,
       inventory=$5,
       "petType"=$6 
-      url=$7
+      "url"=$7
       WHERE id=$1
       RETURNING *;
     `, [id, newTitle, newDescription, newPrice, newInventory, newPetType, newURL]);
