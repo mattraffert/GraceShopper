@@ -201,11 +201,11 @@ async function destroyProduct(id) {
         RETURNING *;
         `, [id]);
 
-    await client.query(`
-        DELETE FROM reviews 
-        WHERE "productId" = $1
-        RETURNING *;
-        `, [id]);
+    // await client.query(`
+    //     DELETE FROM reviews 
+    //     WHERE "productId" = $1
+    //     RETURNING *;
+    //     `, [id]);
 
       const { rows: [deletedProduct] } = await client.query(`
       DELETE FROM products
