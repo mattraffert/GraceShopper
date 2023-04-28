@@ -196,7 +196,7 @@ async function destroyProduct(id) {
       // console.log(`Destroying routine by id ${id}...`)
       
       await client.query(`
-        DELETE FROM order 
+        DELETE FROM orders 
         WHERE "productId" = $1
         RETURNING *;
         `, [id]);
