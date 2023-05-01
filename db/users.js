@@ -60,10 +60,8 @@ async function getUserById(userId) {
     WHERE id=$1;
     `, [userId]);
 
-    delete rows[0].email;
-
     console.log(`Found user by id ${userId}!`);
-    return rows[0];
+    return rows;
 
   } catch (error) {
     console.error(`Found user by id ${userId}!`)

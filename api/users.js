@@ -95,7 +95,7 @@ usersRouter.post('/login', async (req, res, next) => {
 });
 
 usersRouter.get('/me', requireUser, async (req, res, next) => {
-	const id = req.user.id;
+	const { id } = req.body;
 
 	try {
 		const userData = await getUserById(id);
