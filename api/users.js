@@ -94,7 +94,7 @@ usersRouter.post('/login', async (req, res, next) => {
 	}
 });
 
-usersRouter.get('/:userid', requireUser, async (req, res, next) => {
+usersRouter.get('/:userId', requireUser, async (req, res, next) => {
 	const { userId } = req.params;
 
 	try {
