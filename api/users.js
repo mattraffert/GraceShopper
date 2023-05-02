@@ -94,11 +94,11 @@ usersRouter.post('/login', async (req, res, next) => {
 	}
 });
 
-usersRouter.get('/me', requireUser, async (req, res, next) => {
-	const { id } = req.body;
+usersRouter.get('/:userid', requireUser, async (req, res, next) => {
+	const { userId } = req.params;
 
 	try {
-		const userData = await getUserById(id);
+		const userData = await getUserById(userId);
 
 		if (userData) {
 			res.send(userData);
