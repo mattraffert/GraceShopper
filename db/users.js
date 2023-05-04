@@ -131,61 +131,6 @@ async function updateUser({ id, engineer, admin }) {
     throw error } 
 }
 
-/*async function updateUserAddress({ id, address, aptNum, city, state, zip  }) {
-  console.log("fields", address, aptNum, city, state, zip);
-  const origFields = await getUserById(id);
-  let newAddress
-  let newAptNum
-  let newCity
-  let newState
-  let newZip
-
-  try{
-    if(address == undefined) {
-      newAddress = origFields.address;
-    } else {
-      newAddress = address;
-    }
-
-    if(aptNum == undefined) {
-      newAptNum = origFields.aptNum;
-    } else {
-      newAptNum = aptNum;
-    }
-
-    if(city == undefined) {
-      newCity = origFields.city;
-    } else {
-      newCity = city;
-    }
-
-    if(state == undefined) {
-      newState = origFields.state;
-    } else {
-      newState = state;
-    }
-
-    if(zip == undefined) {
-      newZip = origFields.zip;
-    } else {
-      newZip = zip;
-    }
-
-    const { rows: [ user ] } = await client.query(`
-      UPDATE users
-      SET address=$1, aptNum=$2, city=$3, state=$4, zip=$5
-      WHERE id=$6
-      RETURNING *;
-    `, [newAddress, newAptNum, newCity, newState, zip, id])
-
-    console.log("Sucessfully updated user");
-    return user;
-  } catch (error) {
-    console.log(`Error updating user`)
-    throw error } 
-}
-*/
-
 module.exports = {
   createUser,
   getUser,

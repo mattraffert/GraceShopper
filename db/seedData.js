@@ -36,11 +36,6 @@ async function dropTables() {
   }
 }
 
-/*address varchar(255) NOT NULL,
-    aptNum INTEGER,
-    city TEXT NOT NULL,
-    state TEXT NOT NULL, 
-    zip INTEGER*/
 
 async function createTables() {
   try{
