@@ -194,4 +194,3 @@ usersRouter.get('/', async (req, res, next) => {
 })
 
 module.exports = { usersRouter };
-// comment
