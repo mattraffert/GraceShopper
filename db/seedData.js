@@ -47,6 +47,12 @@ async function createTables() {
     password varchar(255) NOT NULL,
     admin BOOLEAN NOT NULL DEFAULT FALSE,
     engineer BOOLEAN NOT NULL DEFAULT FALSE
+    address varchar(255) NOT NULL,
+    aptNum INTEGER,
+    city TEXT NOT NULL,
+    state TEXT NOT NULL, 
+    zip INTEGER
+
   );
   CREATE TABLE products(
     id SERIAL PRIMARY KEY,
