@@ -176,7 +176,7 @@ usersRouter.patch('/:userId', requireUser, async (req, res, next) => {
 	}
 })
 
-usersRouter.patch('/:userId', requireUser, async (req, res, next ) => {
+/*usersRouter.patch('/:userId', requireUser, async (req, res, next ) => {
 	const { address, aptNum, city, state, zip } = req.body;
 	const { userId } = req.params;
 	const userExists = await getUserById(userId);
@@ -204,7 +204,7 @@ usersRouter.patch('/:userId', requireUser, async (req, res, next ) => {
 	} catch ({name, message}) {
 		next({name, message})
 	}
-})
+})*/
 
 usersRouter.get('/', async (req, res, next) => {
 	try{

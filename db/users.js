@@ -131,7 +131,7 @@ async function updateUser({ id, engineer, admin }) {
     throw error } 
 }
 
-async function updateUserAddress({ id, address, aptNum, city, state, zip  }) {
+/*async function updateUserAddress({ id, address, aptNum, city, state, zip  }) {
   console.log("fields", address, aptNum, city, state, zip);
   const origFields = await getUserById(id);
   let newAddress
@@ -184,6 +184,7 @@ async function updateUserAddress({ id, address, aptNum, city, state, zip  }) {
     console.log(`Error updating user`)
     throw error } 
 }
+*/
 
 module.exports = {
   createUser,
