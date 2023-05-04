@@ -1,6 +1,6 @@
 const express = require('express');
 const usersRouter = express.Router();
-const { getUserByEmail, createUser, getUserById, updateUser, getAllUsers, updateUserAddress } = require('../db/users');
+const { getUserByEmail, createUser, getUserById, updateUser, getAllUsers } = require('../db/users');
 const { getOrderById } = require('../db/order');
 const { getReviewByUser } = require('../db/reviews');
 const { requireUser } = require('./require');

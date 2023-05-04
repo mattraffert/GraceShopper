@@ -138,5 +138,4 @@ module.exports = {
   getUserById,
   getUserByEmail,
   updateUser,
-  updateUserAddress
 }
