@@ -1,6 +1,6 @@
 const express = require('express');
 const usersRouter = express.Router();
-const { getUserByEmail, createUser, getUserById, updateUser, getAllUsers } = require('../db/users');
+const { getUserByEmail, createUser, getUserById, updateUser, getAllUsers, updateUserAddress } = require('../db/users');
 const { getOrderById } = require('../db/order');
 const { getReviewByUser } = require('../db/reviews');
 const { requireUser } = require('./require');
@@ -163,6 +163,36 @@ usersRouter.patch('/:userId', requireUser, async (req, res, next) => {
 				id: userId,
 				admin,
 				engineer
+			});
+
+			res.send(updatedUser)
+		} else {
+			res.send({
+				message: `Missing fields`
+			})
+		}
+	} catch ({name, message}) {
+		next({name, message})
+	}
+})
+
+usersRouter.patch('/:userId', requireUser, async (req, res, next ) => {
+	const { address, aptNum, city, state, zip } = req.body;
+	const { userId } = req.params;
+	const userExists = await getUserById(userId);
+
+	try{
+		if (!userExists) {
+			throw Error
+		}
+		if (userId || address || aptNum || city || state || zip) {
+			const updatedUser = await updateUser({
+				id: userId,
+				address,
+				aptNum, 
+				city, 
+				state, 
+				zip
 			});
 
 			res.send(updatedUser)
